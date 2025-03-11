@@ -1,7 +1,7 @@
 require("dotenv").config(); // Load environment variables
 const express = require("express");
 const cors = require("cors");
-const db = require("./config/db"); // Database connection
+const db = require("./config/db") // Database connection
 
 // Import routes
 const sellerRoutes = require("./routes/sellerRoutes");
@@ -14,6 +14,7 @@ const app = express();
 // Middleware
 app.use(cors()); // Enable CORS
 app.use(express.json()); // Parse JSON request bodies
+app.use("/uploads", express.static("uploads")); // Serve uploaded files
 
 // Test database connection
 db.getConnection()

@@ -1,36 +1,35 @@
-const db = require('../../config/db');
+const jwt = require("jsonwebtoken");
+const db = require("../../config/db");
 
 const loginSeller = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Fetch seller from the database
-    const [seller] = await db.execute('SELECT * FROM Seller WHERE email = ?', [email]);
+    // Check if the seller exists
+    const [seller] = await db.query("SELECT * FROM sellers WHERE email = ?", [email]);
 
-    if (seller.length === 0) {
-      return res.status(404).json({ message: 'Seller not found' });
+    if (!seller || seller.length === 0) {
+      return res.status(404).json({ message: "Seller not found" });
     }
 
-    // Compare passwords
-    if (!email || !password) {
-        return res.status(400).json({ error: "Email and password are required" });
-      }
+    // Validate password (assuming passwords are hashed)
+    const isValidPassword = await bcrypt.compare(password, seller[0].password);
+    if (!isValidPassword) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
 
-    // Return seller details (excluding password)
-    const sellerDetails = {
-      id: seller[0].id,
-      first_name: seller[0].first_name,
-      last_name: seller[0].last_name,
-      email: seller[0].email,
-      store_name: seller[0].store_name,
-      store_address: seller[0].store_address,
-    };
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: seller[0].id, email: seller[0].email }, // Include seller ID in the token
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" } // Token expires in 1 hour
+    );
 
-    res.status(200).json({ message: 'Login successful', seller: sellerDetails });
-    console.log(sellerDetails);
+    res.status(200).json({ token, sellerId: seller[0].id });
   } catch (error) {
-    console.error('Error logging in seller:', error);
-    res.status(500).json({ message: 'Error logging in seller', error });
+    console.error("Error logging in seller:", error);
+    res.status(500).json({ message: "Failed to log in seller" });
   }
 };
+
 module.exports = { loginSeller };

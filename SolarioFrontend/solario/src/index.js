@@ -1,4 +1,4 @@
-import "./global.css";
+
 import React from "react";
 import ReactDOM from "react-dom/client"; // Import from react-dom/client
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -9,6 +9,7 @@ import ResetPassword from "./ForgotPass/Password_js/resetPass";
 import Home from "./HomePage/MainPage";
 import Register from './AuthPage/JS/Reg';
 import Seller from './SellerDash/SellerDash';
+import Products from './SellerDash/Products/product';
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 
@@ -30,6 +31,7 @@ root.render(
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/Seller" element={<Seller />} />
+        <Route path="/Product" element={<Products />} />
       
         
       </Routes>

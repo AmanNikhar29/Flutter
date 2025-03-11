@@ -36,6 +36,10 @@ const SellerDashboard = () => {
     setIsDrawerOpen(!isDrawerOpen);
     
   };
+  const handleAction = () => {
+   navigate('/Product');
+    
+  };
 
 
   const [analytics, setAnalytics] = useState({
@@ -85,6 +89,8 @@ useEffect(() => {
     });
     }, [period]);
 
+
+
   return (
     <div className="seller-dashboard">
       {/* Drawer */}
@@ -116,7 +122,7 @@ useEffect(() => {
           
             <p className="H1">Your Store</p><br/>
             <div className="menu-item">
-              <span>➕ Add Product</span>
+              <span onClick={handleAction}>➕ Add Product</span>
               <i className="fas fa-chevron-right"></i>
             </div>
             <div className="menu-item">
