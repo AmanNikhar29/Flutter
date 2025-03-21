@@ -80,6 +80,17 @@ a:hover {
     color: black;
     outline: none;
 }
+
+/* Custom Toast Styles */
+.custom-toast {
+  height: 60px; /* Increase height */
+  border-radius: 20px; /* Add border radius */
+  font-size: 16px; /* Increase font size */
+  padding: 15px 20px; /* Add padding */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
   
   .input-fieldLogin input:focus {
     border-color: #1B365D;

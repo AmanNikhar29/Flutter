@@ -1,0 +1,117 @@
+.edit-profile-container {
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(to bottom, #fff7e6, #1b365d);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .edit-profile-header {
+    text-align: left;
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 20px;
+  }
+  
+  .edit-profile-header h1 {
+    font-size: 22px;
+    font-weight: 500;
+    color: #000;
+  }
+  
+  .edit-profile-header p {
+    font-size: 16px;
+    color: #000;
+  }
+  
+  .divider {
+    width: 100%;
+    height: 2px;
+    background-color: #a2a8b3;
+    margin: 10px 0;
+  }
+  
+  .edit-profile-form {
+    background: white;
+    padding: 24px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .edit-profile-form h2 {
+    font-size: 28px;
+    font-weight: 500;
+    color: #130a33;
+    margin-bottom: 20px;
+  }
+  
+  .form-group {
+    margin-bottom: 16px;
+  }
+  
+  .form-group label {
+    font-size: 15px;
+    font-weight: 600;
+    color: #000;
+    display: block;
+    margin-bottom: 8px;
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 16px;
+    border: 1px solid #fff;
+    border-radius: 40px;
+    background-color: rgba(255, 255, 255, 0.2);
+    font-size: 16px;
+    color: #000;
+    outline: none;
+  }
+  
+  .form-group input:focus {
+    border-color: #1b365d;
+  }
+  
+  .forgot-password {
+    font-size: 13px;
+    font-weight: 300;
+    font-style: italic;
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+    margin: 10px 0;
+  }
+  
+  .save-changes-button,
+  .cancel-button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 25px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+  
+  .save-changes-button {
+    background-color: #e48d23;
+    color: #fff;
+  }
+  
+  .cancel-button {
+    background-color: #fff;
+    color: #130a33;
+    border: 1px solid #130a33;
+  }
+  
+  .save-changes-button:hover,
+  .cancel-button:hover {
+    opacity: 0.9;
+    transform: scale(1.02);
+    transition: all 0.2s ease-in-out;
+  }

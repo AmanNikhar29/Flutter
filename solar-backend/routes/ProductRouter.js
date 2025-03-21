@@ -1,30 +1,48 @@
 const express = require("express");
 const router = express.Router();
-const productController = require('../controllers/Sellers/Products/Product')
-const authenticateSeller = require("../middleware/authmiddleware")
-const multer = require("multer");
+const fs = require("fs");
 const path = require("path");
+const multer = require("multer");
+const productController = require("../controllers/Sellers/Products/Product");
+const {deleteProduct} = require("../controllers/Sellers/Products/Product");
 
-// Multer configuration for file uploads
+// ✅ Ensure 'uploads' directory exists
+const uploadDir = "uploads/";
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+// ✅ Configure Multer Storage for Image Uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/"); // Save uploaded files in the "uploads" folder
+    cb(null, uploadDir); // Store files in 'uploads' directory
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+    cb(null, Date.now() + path.extname(file.originalname)); // Rename file with timestamp
   },
 });
 
-const upload = multer({ storage });
+// ✅ Filter to Accept Only Image Files
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error("Only image files (JPG, PNG, WEBP) are allowed"), false);
+  }
+};
 
-// Ensure the "uploads" folder exists
-const fs = require("fs");
-const dir = "./uploads";
-if (!fs.existsSync(dir)) {
-  fs.mkdirSync(dir);
-}
+const upload = multer({ storage: storage, fileFilter: fileFilter });
 
-// Add a new product
+// ✅ Route to Upload File Directly (for testing)
+router.post("/upload", upload.single("file"), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: "No file uploaded" });
+  }
+  res.json({ message: "File uploaded successfully!", filename: req.file.filename });
+});
 
-router.post("/add-Product", authenticateSeller, upload.single("productImage"),productController.addProduct);
+// ✅ Route to Add New Product (Ensure 'product_image' is sent from frontend)
+router.post("/", upload.single("product_image"), productController.addProduct);
+router.delete('/delproduct/:id',deleteProduct);
 module.exports = router;

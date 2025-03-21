@@ -36,10 +36,25 @@ const SellerDashboard = () => {
     setIsDrawerOpen(!isDrawerOpen);
     
   };
-  const handleAction = () => {
+  const handleAction1 = () => {
    navigate('/Product');
-    
   };
+  const handleAction2 = () => {
+    navigate('/ProductList');
+   };
+   const handleAction3 = () => {
+    navigate('/editProfile');
+   };
+   const handleAction4 = () => {
+    navigate('/Product');
+   };
+   const handleAction5 = () => {
+    navigate('/Product');
+   };
+   const handleAction6 = () => {
+    navigate('/Product');
+   };
+
 
 
   const [analytics, setAnalytics] = useState({
@@ -122,28 +137,28 @@ useEffect(() => {
           
             <p className="H1">Your Store</p><br/>
             <div className="menu-item">
-              <span onClick={handleAction}>➕ Add Product</span>
+              <span onClick={handleAction1}>➕ Add Product</span>
               <i className="fas fa-chevron-right"></i>
             </div>
             <div className="menu-item">
-              <span>📦 View Products</span>
+              <span onClick={handleAction2}>📦 View Products</span>
               <i className="fas fa-chevron-right"></i>
             </div>
             <div className="menu-item">
-              <span>🔄 Requests</span>
+              <span >🔄 Requests</span>
               <i className="fas fa-chevron-right"></i>
             </div>
             <div className="menu-item">
-              <span>🔔 Notifications</span>
+              <span onClick={handleAction4}>🔔 Notifications</span>
               <i className="fas fa-chevron-right"></i>
             </div>
             <p className="H1">Payments</p><br/>
             <div className="menu-item">
-              <span>💰 Your Wallet</span>
+              <span onClick={handleAction5}>💰 Your Wallet</span>
               <i className="fas fa-chevron-right"></i>
             </div>
             <div className="menu-item">
-              <span>⏳ Payment History</span>
+              <span onClick={handleAction6}>⏳ Payment History</span>
               <i className="fas fa-chevron-right"></i>
             </div>
   
@@ -151,7 +166,7 @@ useEffect(() => {
           
           <div className="drawer-menu">
             <div className="menu-item">
-              <span>✏️ Edit Profile</span>
+              <span onClick={handleAction3} >✏️ Edit Profile</span>
               <i className="fas fa-chevron-right"></i>
             </div>
             <div className="menu-item">

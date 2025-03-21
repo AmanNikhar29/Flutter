@@ -53,7 +53,7 @@ const authenticateSeller = (req, res, next) => {
 router.post("/registerSeller", upload.single("file"), registerSeller); // Register seller with file upload
 router.get("/getSeller/:id", getSeller); // Fetch a single seller by ID
 router.get("/getAllSellers", getAllSellers); // Fetch all sellers
-router.put("/updateSeller/:id", updateSeller); // Update seller details
+// router.put("/updateSeller/:id", updateSeller); // Update seller details
 router.delete("/deleteSeller/:id", deleteSeller); // Delete a seller
 
 // Seller login route

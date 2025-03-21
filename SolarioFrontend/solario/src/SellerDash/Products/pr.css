@@ -12,7 +12,7 @@ body {
     top: -25px;
     max-width: 600px;
     width: 350px;
-    height: 590px;
+    height: 647px;
     margin: 50px auto;
     padding: 20px;
     background-color: #ffffff2b;
@@ -28,7 +28,7 @@ body {
   font-size: 30px;
   font-weight: 600;
   color: #000000;
-  top: -20px;
+  top: -5px;
 }
   
   .add-product-form {
@@ -53,7 +53,7 @@ body {
   
   .form-group input, .form-group select, .form-group textarea {
     padding: 14px;
-    margin-top: 15px;
+    margin-top: 25px;
     border: none;
     border-radius: 30px;
     background-color: #ffffff55;
@@ -77,7 +77,8 @@ body {
   }
   
   .submit-button {
-    margin-top: -10px;
+    position: relative;
+    top: -49px;
     padding: 12px;
     background-color: #ffffff;
     color: #000000;

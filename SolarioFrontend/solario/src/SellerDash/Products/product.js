@@ -1,189 +1,180 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./pr.css"; // Import the CSS file
+// import { useNavigate } from "react-router-dom";
 
 const AddProduct = () => {
   const [product, setProduct] = useState({
-    productId: "",
+    product_id: "",
     name: "",
     category: "",
     description: "",
     type: "",
     price: "",
-    stockQuantity: "",
-    productImage: null, // For file upload
+    stock_quantity: "",
+    product_image: null,
+    sellerId: "", // Auto-filled from localStorage
   });
+
+  useEffect(() => {
+    const storedSellerId = localStorage.getItem("sellerId");
+    if (storedSellerId) {
+      setProduct((prev) => ({ ...prev, sellerId: storedSellerId }));
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setProduct({
-      ...product,
+    setProduct((prev) => ({
+      ...prev,
       [name]: value,
-    });
+    }));
   };
 
   const handleImageChange = (e) => {
     setProduct({
       ...product,
-      productImage: e.target.files[0],
+      product_image: e.target.files[0],
     });
   };
 
+  // const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
+    const sellerId = localStorage.getItem("sellerId"); // Retrieve sellerId from localStorage
+    if (!sellerId) {
+      alert("Seller ID is missing. Please log in again.");
+      return;
+    }
+    else if (!product.product_image) {
+      alert("Please select a product image.");
+      return;
+    }
+    
+
     const formData = new FormData();
-    formData.append("productId", product.productId);
+    formData.append("product_id", product.product_id);
     formData.append("name", product.name);
     formData.append("category", product.category);
-    formData.append("description", product.description);
     formData.append("type", product.type);
     formData.append("price", product.price);
-    formData.append("stockQuantity", product.stockQuantity);
-    formData.append("productImage", product.productImage);
-  
+    formData.append("stock_quantity", product.stock_quantity);
+    formData.append("seller_id", sellerId); // Correct field name
+    formData.append("product_image", product.product_image); // Match backend field name
+    formData.append("description", product.description);
+ // Include sellerId in the request
+
     try {
-      const token = localStorage.getItem("token"); // Assuming you store the token in localStorage after login
-      const response = await fetch("http://localhost:5000/api/products/add-Product", {
+      const response = await fetch("http://localhost:5000/api/products", {
         method: "POST",
         body: formData,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       });
-  
+
       if (response.ok) {
         alert("Product added successfully!");
         setProduct({
-          productId: "",
+          product_id: "",
           name: "",
           category: "",
           description: "",
           type: "",
           price: "",
-          stockQuantity: "",
-          productImage: null,
+          stock_quantity: "",
+          product_image: null,
+          sellerId: sellerId,
         });
       } else {
-        alert("Failed to add product.");
+        const errorData = await response.json();
+        alert(`Failed to add product: ${errorData.message}`);
       }
     } catch (error) {
       console.error("Error:", error);
+      alert("An error occurred while adding the product.");
     }
   };
 
   return (
     <div className="body">
-  <h1 className="add-product-title">Add New Product</h1>
-    <div className="add-product-container">
-      
-      <form >
-        <div className="form-group">
-          <label htmlFor="productId">Product ID</label>
-          <input
-            type="text"
-            id="productId"
-            name="productId"
-            value={product.productId}
-            onChange={handleChange}
-            required
-          />
-        </div>
+      <h1 className="add-product-title">Add New Product</h1>
+      <div className="add-product-container">
+        <form >
+          {/* Auto-filled Seller ID */}
+          <div className="form-group">
+            <label>Seller ID (Auto-filled)</label>
+            <input type="text" value={product.sellerId} disabled />
+          </div>
 
-        <div className="form-group">
-          <label htmlFor="name">Product Name</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={product.name}
-            onChange={handleChange}
-            required
-          />
-        </div>
+          <div className="form-group">
+            <label>Product ID</label>
+            <input
+              type="text"
+              name="product_id" // Fixed name
+              value={product.product_id}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        <div className="form-group">
-          <label htmlFor="category">Category</label>
-          <select
-            id="category"
-            name="category"
-            value={product.category}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Select Category</option>
-            <option value="Electronics">Electronics</option>
-            <option value="Clothing">Clothing</option>
-            <option value="Home & Kitchen">Home & Kitchen</option>
-            <option value="Books">Books</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
+          <div className="form-group">
+            <label>Product Name</label>
+            <input
+              type="text"
+              name="name"
+              value={product.name}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        <div className="form-group">
-          <label htmlFor="description">Description</label>
-          <textarea
-            id="description"
-            name="description"
-            value={product.description}
-            onChange={handleChange}
-            rows="1"
-            required
-          ></textarea>
-        </div>
+          <div className="form-group">
+            <label>Category</label>
+            <select name="category" value={product.category} onChange={handleChange} required>
+              <option value="">Select Category</option>
+              <option value="Solar Panels">Solar Panels</option>
+              <option value="Inverters">Inverters</option>
+              <option value="Batteries">Batteries</option>
+              <option value="Accessories">Accessories</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
 
-        <div className="form-group">
-          <label htmlFor="type">Type</label>
-          <input
-            type="text"
-            id="type"
-            name="type"
-            value={product.type}
-            onChange={handleChange}
-            required
-          />
-        </div>
+          <div className="form-group">
+            <label>Description</label>
+            <textarea name="description" value={product.description} onChange={handleChange} rows="2" required></textarea>
+          </div>
 
-        <div className="form-group">
-          <label htmlFor="price">Price</label>
-          <input
-            type="number"
-            id="price"
-            name="price"
-            value={product.price}
-            onChange={handleChange}
-            required
-          />
-        </div>
+          <div className="form-group">
+            <label>Type</label>
+            <input type="text" name="type" value={product.type} onChange={handleChange} required />
+          </div>
 
-        <div className="form-group">
-          <label htmlFor="stockQuantity">Stock Quantity</label>
-          <input
-            type="number"
-            id="stockQuantity"
-            name="stockQuantity"
-            value={product.stockQuantity}
-            onChange={handleChange}
-            required
-          />
-        </div>
+          <div className="form-group">
+            <label>Price (₹)</label>
+            <input type="number" name="price" value={product.price} onChange={handleChange} required />
+          </div>
 
-        <div className="form-group">
-          <label htmlFor="productImage">Product Image</label>
-          <input
-            type="file"
-            id="productImage"
-            name="productImage"
-            onChange={handleImageChange}
-           
-          />
-        </div>
+          <div className="form-group">
+            <label>Stock Quantity</label>
+            <input
+              type="number"
+              name="stock_quantity" // Fixed name
+              value={product.stock_quantity}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
+          <div className="form-group">
+            <label>Product Image</label>
+            <input type="file" name="product_image" onChange={handleImageChange} />
+          </div>
+
+          
+        </form>
         
-      </form>
-    </div>
-    <button type="submit" onClick={handleSubmit} className="submit-button"> 
-          Add Product
-        </button>
+      </div>
+      <button type="submit" onClick={handleSubmit} className="submit-button">Add Product</button>
     </div>
   );
 };

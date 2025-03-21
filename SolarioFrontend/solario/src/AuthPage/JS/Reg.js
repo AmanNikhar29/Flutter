@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../styles/Register.css';
-
+import { useNavigate } from 'react-router-dom';
 const Register = () => {
   const [formData, setFormData] = useState({
     firstName: '',
@@ -37,7 +37,7 @@ const Register = () => {
       alert(`File selected: ${file.name}`); // Notify the user
     }
   };
-
+  const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -81,6 +81,7 @@ const Register = () => {
       const data = await response.json();
 
       if (response.ok) {
+        localStorage.setItem("sellerId", data.sellerId);
         alert("Registration successful!");
         console.log("Response Data:", data);
         setFormData({
@@ -93,7 +94,9 @@ const Register = () => {
           password: '',
           confirmPassword: '',
           file: null, // Reset file state
+         
         });
+        navigate('/login');
       } else {
         throw new Error(data.message || "Registration failed.");
       }

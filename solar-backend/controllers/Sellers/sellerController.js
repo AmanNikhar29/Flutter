@@ -42,12 +42,20 @@ const registerSeller = async (req, res) => {
     const filePath = file.path; // Path to the uploaded certificate
 
     // Insert seller into the database with isVerified set to false
-    await db.execute(
-      'INSERT INTO Seller (first_name, last_name, email, contact_no, store_name, store_address, password, file, isVerified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      [first_name, last_name, email, contact_no, store_name, store_address, password, filePath, false]
-    );
+    const insertQuery = `
+      INSERT INTO Seller (first_name, last_name, email, contact_no, store_name, store_address, password, file, isVerified)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+    const insertValues = [first_name, last_name, email, contact_no, store_name, store_address, password, filePath, false];
 
-    res.json({ message: 'Seller registered successfully. Awaiting verification.' });
+    // Execute the INSERT query
+    const [insertResult] = await db.execute(insertQuery, insertValues);
+
+    // Retrieve the auto-generated seller ID
+    const [idResult] = await db.execute('SELECT LAST_INSERT_ID() AS id');
+    const sellerId = idResult[0].id;
+
+    res.status(201).json({ message: 'Seller registered successfully. Awaiting verification.', sellerId });
   } catch (error) {
     console.error('Error registering seller:', error);
     res.status(500).json({ error: 'Error registering seller' });
@@ -95,49 +103,6 @@ const getAllSellers = async (req, res) => {
 };
 
 
-const updateSeller = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { password, confirm_password, contact_no } = req.body;
-
-    if (!id) {
-      return res.status(400).json({ error: 'Seller ID is required' });
-    }
-
-    if (!contact_no && !password) {
-      return res.status(400).json({ error: 'At least one field (password or contact_no) is required for update' });
-    }
-
-    let query = 'UPDATE Seller SET';
-    const values = [];
-    
-    if (contact_no) {
-      query += ' contact_no = ?,';
-      values.push(contact_no);
-    }
-
-    if (password) {
-      if (!confirm_password || password !== confirm_password) {
-        return res.status(400).json({ error: 'Passwords do not match' });
-      }
-      
-      const hashedPassword = await bcrypt.hash(password, 10);
-      query += ' password = ?,';
-      values.push(hashedPassword);
-    }
-
-    query = query.replace(/,$/, ' WHERE id = ?');
-    values.push(id);
-
-    await db.execute(query, values);
-
-    res.json({ message: 'Seller profile updated successfully' });
-  } catch (error) {
-    console.error('Error updating seller details:', error);
-    res.status(500).json({ error: 'Error updating seller details' });
-  }
-};
-
 const deleteSeller = async (req, res) => {
   try {
     const { id } = req.params;
@@ -160,4 +125,4 @@ const getUnverifiedSellers = async (req, res) => {
   }
 };
 
-module.exports = { getSeller, deleteSeller, updateSeller, registerSeller, getAllSellers, verifySeller, getUnverifiedSellers };
+module.exports = { getSeller, deleteSeller, registerSeller, getAllSellers, verifySeller, getUnverifiedSellers };
