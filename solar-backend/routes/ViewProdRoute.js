@@ -1,14 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const productController = require('../controllers/Sellers/Products/productList')
-
+const {getAllProducts,updateProduct} = require('../controllers/Sellers/Products/productList')
+const {getAllProductsId} = require('../controllers/Sellers/Products/Product')
 // Fetch all products
-router.get('/', productController.getAllProducts);
+router.get('/', getAllProducts);
 
 // Fetch a single product by ID
-router.get('/:id', productController.getProductById);
+router.get('/:id', getAllProductsId);
 
 // Update a product
-router.put('/:id', productController.updateProduct);
+router.put('/:id', updateProduct);
 
 module.exports = router;

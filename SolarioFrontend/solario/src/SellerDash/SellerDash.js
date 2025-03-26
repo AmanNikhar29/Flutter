@@ -1,172 +1,240 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import "./Seller.css"; // Import the CSS file
-import axios from "axios";
+import "./Seller.css";
+import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+
+// Predefined avatars
+const avatars = [
+  // Add your avatar URLs here if needed
+];
+
 const SellerDashboard = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [sellerName, setSellerName] = useState("");
+  const [products, setProducts] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [editablePrice, setEditablePrice] = useState('');
+  const [editableStockQuantity, setEditableStockQuantity] = useState('');
+  const [profileImage, setProfileImage] = useState("");
+  const [showAvatarPicker, setShowAvatarPicker] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
+  // Fetch products from the backend
   useEffect(() => {
-    const storedSeller = localStorage.getItem("seller"); // Use the correct key
+    fetchProducts();
+    const storedSeller = localStorage.getItem("seller");
     if (storedSeller) {
       try {
         const seller = JSON.parse(storedSeller);
-        // Combine first_name and last_name (or use a fallback if missing)
         const name = seller.first_name && seller.last_name
           ? `${seller.first_name} ${seller.last_name}`
           : "Seller";
         setSellerName(name);
       } catch (error) {
-        console.error("Error parsing seller data from localStorage:", error);
-        setSellerName("Seller"); // Fallback name
+        console.error("Error parsing seller data:", error);
+        setSellerName("Seller");
       }
     } else {
-      setSellerName("Seller"); // Fallback name if no data is found
+      setSellerName("Seller");
     }
   }, []);
-  const navigate = useNavigate();
-  const handleLogout = () => {
-    localStorage.removeItem('seller'); // Clear seller data
-    navigate('/login'); // Redirect to login page
+
+  const fetchProducts = async () => {
+    setIsLoading(true);
+    try {
+      const sellerId = localStorage.getItem('sellerId');
+      
+      if (!sellerId) {
+        console.error('No sellerId found');
+        return;
+      }
+
+      const response = await axios.get(`http://localhost:5000/api/product/${sellerId}`);
+      console.log('API Response:', response.data); // Debug log
+      
+      if (response.data && response.data.products) {
+        setProducts(response.data.products);
+      } else if (Array.isArray(response.data)) {
+        setProducts(response.data);
+      } else {
+        console.error('Unexpected response format');
+        setProducts([]);
+      }
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      setProducts([]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
+  const handleAvatarSelect = (avatar) => {
+    setProfileImage(avatar);
+    setShowAvatarPicker(false);
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const filteredProducts = products.filter((product) =>
+    product.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleProductClick = (product) => {
+    setSelectedProduct(product);
+    setEditablePrice(product.price);
+    setEditableStockQuantity(product.stock_quantity);
+  };
+
+  const closeModal = () => {
+    setSelectedProduct(null);
+    setEditablePrice('');
+    setEditableStockQuantity('');
+  };
+
+  const handlePriceChange = (e) => {
+    setEditablePrice(e.target.value);
+  };
+
+  const handleStockQuantityChange = (e) => {
+    setEditableStockQuantity(e.target.value);
+  };
+
+  const handleUpdate = async () => {
+    try {
+      const updatedProduct = {
+        ...selectedProduct,
+        price: editablePrice,
+        stock_quantity: editableStockQuantity,
+      };
+
+      await axios.put(`http://localhost:5000/api/product/${selectedProduct.id}`, updatedProduct);
+      fetchProducts();
+      closeModal();
+      alert('Product updated successfully!');
+    } catch (error) {
+      console.error('Error updating product:', error);
+      alert('Failed to update product.');
+    }
+  };
+
+  const handleDelete = async (productId) => {
+    try {
+      const confirmDelete = window.confirm('Are you sure you want to delete this product?');
+      if (!confirmDelete) return;
+
+      await axios.delete(`http://localhost:5000/api/products/delProduct/${productId}`);
+      fetchProducts();
+      closeModal();
+      alert('Product deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      alert('Failed to delete product.');
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('seller');
+    navigate('/login');
+  };
 
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
-    
   };
+
   const handleAction1 = () => {
-   navigate('/Product');
+    navigate('/Product');
   };
-  const handleAction2 = () => {
-    navigate('/ProductList');
-   };
-   const handleAction3 = () => {
+
+  const handleAction3 = () => {
     navigate('/editProfile');
-   };
-   const handleAction4 = () => {
+  };
+
+  const handleAction4 = () => {
+    navigate('/CompelteProfile');
+  };
+
+  const handleAction5 = () => {
     navigate('/Product');
-   };
-   const handleAction5 = () => {
+  };
+
+  const handleAction6 = () => {
     navigate('/Product');
-   };
-   const handleAction6 = () => {
-    navigate('/Product');
-   };
-
-
-
-  const [analytics, setAnalytics] = useState({
-    transactionSuccess: 0,
-    responseRate: 0,
-    happyFeedbacks: 0,
-  });
-  
-  useEffect(() => {
-    axios.get("/api/seller/analytics")
-      .then((response) => {
-        setAnalytics(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching analytics:", error);
-      });
-  }, []);
-
-const [earnings, setEarnings] = useState({ totalBalance: 0, earnings: 0 });
-const [period, setPeriod] = useState("month"); // Default to current month
-
-useEffect(() => {
-  axios.get(`/api/seller/earnings?period=${period}`)
-    .then((response) => {
-      setEarnings(response.data);
-    })
-    .catch((error) => {
-      console.error("Error fetching earnings:", error);
-    });
-}, [period]);
-
-  const currentDate = new Date().toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "long",
-    year: "numeric"
-  });
-  
-  const [history, setHistory] = useState([]);
-
-  useEffect(() => {
-    axios.get(`/api/seller/history?period=${period}`)
-    .then((response) => {
-      setHistory(response.data);
-    })
-    .catch((error) => {
-      console.error("Error fetching history:", error);
-    });
-    }, [period]);
-
-
+  };
 
   return (
     <div className="seller-dashboard">
       {/* Drawer */}
       <div className={`drawer ${isDrawerOpen ? "open" : ""}`}>
         <div className="drawer-header">
-          <div className="drawer-background">
-            <img
-              src="https://picsum.photos/seed/572/600"
-              alt="Background"
-              className="drawer-bg-image"
-            />
-            <button onClick={toggleDrawer} className="drawer-close-button">
-              <i className="fas fa-chevron-left"></i>
-            </button>
-          </div>
+          <button onClick={toggleDrawer} className="go-back-button-drawer">
+            🡰
+          </button>
           <div className="profile-section">
             <div className="profile-image">
               <img
-                src="https://picsum.photos/seed/339/600"
+                src={profileImage}
                 alt="Profile"
                 className="profile-img"
               />
+              <span
+                className="pencil-icon"
+                onClick={() => setShowAvatarPicker(!showAvatarPicker)}
+              >
+                ✏️
+              </span> 
             </div>
+            {showAvatarPicker && (
+              <div className="avatar-picker">
+                {avatars.map((avatar, index) => (
+                  <img
+                    key={index}
+                    src={avatar}
+                    alt={`Avatar ${index + 1}`}
+                    className="avatar-option"
+                    onClick={() => handleAvatarSelect(avatar)}
+                  />
+                ))}
+              </div>
+            )}
             <div className="profile-info">
-              <h2 className="profile-name">{sellerName}</h2> {/* Display seller's name */}
+              <h2 className="profile-name">{sellerName}</h2>
               <p className="profile-location">Nagpur</p>
             </div>
           </div>
+
+          <button onClick={handleAction4} className="Complete">
+            Complete Your Profile
+          </button>
+
+          <p className="H1">Your Store</p><br />
+          <div className="menu-item">
+            <span onClick={handleAction1}>➕ Add Product</span>
+            <i className="fas fa-chevron-right"></i>
+          </div>
+          <div className="menu-item">
+            <span>🔄 Requests</span>
+            <i className="fas fa-chevron-right"></i>
+          </div>
           
-            <p className="H1">Your Store</p><br/>
-            <div className="menu-item">
-              <span onClick={handleAction1}>➕ Add Product</span>
-              <i className="fas fa-chevron-right"></i>
-            </div>
-            <div className="menu-item">
-              <span onClick={handleAction2}>📦 View Products</span>
-              <i className="fas fa-chevron-right"></i>
-            </div>
-            <div className="menu-item">
-              <span >🔄 Requests</span>
-              <i className="fas fa-chevron-right"></i>
-            </div>
-            <div className="menu-item">
-              <span onClick={handleAction4}>🔔 Notifications</span>
-              <i className="fas fa-chevron-right"></i>
-            </div>
-            <p className="H1">Payments</p><br/>
-            <div className="menu-item">
-              <span onClick={handleAction5}>💰 Your Wallet</span>
-              <i className="fas fa-chevron-right"></i>
-            </div>
-            <div className="menu-item">
-              <span onClick={handleAction6}>⏳ Payment History</span>
-              <i className="fas fa-chevron-right"></i>
-            </div>
-  
-            <p className="H1">Your Profile</p><br/>
-          
+          <p className="H1">Payments</p><br />
+          <div className="menu-item">
+            <span onClick={handleAction5}>💰 Your Wallet</span>
+            <i className="fas fa-chevron-right"></i>
+          </div>
+          <div className="menu-item">
+            <span onClick={handleAction6}>⏳ Payment History</span>
+            <i className="fas fa-chevron-right"></i>
+          </div>
+
+          <p className="H1">Your Profile</p><br />
+
           <div className="drawer-menu">
             <div className="menu-item">
-              <span onClick={handleAction3} >✏️ Edit Profile</span>
+              <span onClick={handleAction3}>✏️ Edit Profile</span>
               <i className="fas fa-chevron-right"></i>
             </div>
             <div className="menu-item">
@@ -178,23 +246,22 @@ useEffect(() => {
               <i className="fas fa-chevron-right"></i>
             </div>
           </div>
-          <button onClick={handleLogout}  className="logout-button">Log Out</button>
+          <button onClick={handleLogout} className="logout-button">
+            Log Out
+          </button>
         </div>
-        
       </div>
 
       {/* Main Content */}
-      <div className="main-content">
-        {/* Header */}
+      <div className={`main-content ${isDrawerOpen ? "drawer-open" : ""}`}>
         <div className="header">
           <div className="header-left">
-            <h1 className="greeting">Hi, {sellerName}</h1> {/* Display seller's name */}
-            <p className="date">{currentDate}</p>
+            <h1 className="greeting">Hi, {sellerName}</h1>
           </div>
           <div className="header-right">
             <button onClick={toggleDrawer} className="profile-button">
               <img
-                src="https://picsum.photos/seed/572/600"
+                src={profileImage}
                 alt="Profile"
                 className="profile-img"
               />
@@ -202,69 +269,88 @@ useEffect(() => {
           </div>
         </div>
 
-        {/* Analytics Section */}
-        <select onChange={(e) => setPeriod(e.target.value)}>
-        <option value="day">Today</option>
-        <option value="month">This Month</option>
-        <option value="year">This Year</option>
-</select>
-        <div className="analytics-section">
-          <h2 className="section-title">Analytics</h2>
-          <div className="analytics-cards">
-            <motion.div
-              className="analytics-card"
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              <h3>97.20%</h3>
-              <p>Transaction success</p>
-            </motion.div>
-            <motion.div
-              className="analytics-card"
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              <h3>97.20%</h3>
-              <p>Response rate</p>
-            </motion.div>
-            <motion.div
-              className="analytics-card"
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              <h3>97.20%</h3>
-              <p>Happy Feedbacks</p>
-            </motion.div>
-          </div>
-        </div>
+        <div className="product-list">
+          <h1 className="Head">My Products</h1>
+          <p className="Para">Overview for your products!</p>
 
-        {/* Earnings Section */}
-        <div className="earnings-section">
-          <h2 className="section-title">Earnings</h2>
-          <div className="earnings-card">
-            <p>Total balance</p>
-            <h3>₹5000.00</h3>
+          <div className="search-bar">
+            <input
+              className="searchBar"
+              type="text"
+              placeholder="    🔍 Search products or accessories here  "
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
           </div>
-          <div className="earnings-chart">
-            <p>Earning in February</p>
-            <h3>₹2500.25</h3>
-            {/* Placeholder for Chart */}
-            <div className="chart-placeholder"></div>
-          </div>
-        </div>
 
-        {/* History Section */}
-        <div className="history-section">
-          <h2 className="section-title">History</h2>
-          <div className="history-list">
-  {history.map((item) => (
-    <div key={item.id} className="history-item">
-      <p>Payment from {item.customer}</p>
-      <p>₹{item.amount.toFixed(2)}</p>
-      <p>{new Date(item.date).toLocaleDateString()}</p>
-    </div>
-  ))}
-</div>
+          <div className="product-grid">
+            {isLoading ? (
+              <div className="loading-message">Loading products...</div>
+            ) : filteredProducts.length > 0 ? (
+              filteredProducts.map((product) => (
+                <div onClick={() => handleProductClick(product)} key={product.id} className="product-card">
+                  
+                  <h3>{product.name}</h3>
+                  <p>Price: ${product.price}</p>
+                  <p>Stock: {product.stock_quantity}</p>
+                  <span
+                    className="delete-icon"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(product.id);
+                    }}
+                  >
+                  
+                  </span>
+                </div>
+              ))
+            ) : (
+              <div className="no-products-message">
+                {searchQuery ? 'No products match your search' : 'No products found'}
+              </div>
+            )}
+          </div>
+
+          {selectedProduct && (
+            <div className="modal-overlay" onClick={closeModal}>
+              <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <button className="close-button" onClick={closeModal}>×</button>
+                {selectedProduct.product_image && (
+                  <img
+                    src={`http://localhost:5000/uploads/${selectedProduct.product_image}`}
+                    alt={selectedProduct.name}
+                    className="modal-image"
+                  />
+                )}
+                <h2>{selectedProduct.name}</h2>
+                <p><strong>Category:</strong> {selectedProduct.category}</p>
+                <p><strong>Type:</strong> {selectedProduct.type}</p>
+                <p>
+                  <strong>Price:</strong>
+                  <input
+                    type="number"
+                    value={editablePrice}
+                    onChange={handlePriceChange}
+                  />
+                </p>
+                <p>
+                  <strong>Quantity:</strong>
+                  <input
+                    type="number"
+                    value={editableStockQuantity}
+                    onChange={handleStockQuantityChange}
+                  />
+                </p>
+                <p><strong>Description:</strong> {selectedProduct.description}</p>
+                <button className="update-button" onClick={handleUpdate}>
+                  Update
+                </button>
+                <button className="delete-button" onClick={() => handleDelete(selectedProduct.id)}>
+                  Delete Product
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

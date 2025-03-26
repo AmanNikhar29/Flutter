@@ -15,7 +15,7 @@ body {
 .H1 {
   margin-top: 40px;
   margin-bottom: -20px;
-  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   font-weight: 600;
 }
 
@@ -29,7 +29,8 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  bottom: 0; 
+  bottom: 0;
+  z-index: 1000; /* Ensure drawer is above other content */
 }
 
 .drawer.open {
@@ -41,16 +42,11 @@ body {
   background: #ffffff;
   color: #000000;
   height: 100vh;
-  overflow-y:scroll; 
-/* Make the drawer content scrollable */
+  overflow-y: scroll; /* Make the drawer content scrollable */
 }
 
 .drawer-bg-image {
-  left: -20px;
-  top: -20px;
-  position: relative;
-  width: 111%;
-  height: 160px;
+  display: none; /* Remove the background image */
 }
 
 .drawer-close-button {
@@ -64,20 +60,19 @@ body {
   cursor: pointer;
 }
 
+/* Profile Section */
 .profile-section {
   text-align: center;
-  margin-top: -50px;
+  margin-top: 20px; /* Adjust spacing */
 }
 
 .profile-image {
   position: relative;
-  left: -135px;
-  top: -20px;
   width: 100px;
   height: 100px;
   border-radius: 50%;
   overflow: hidden;
-  margin: 0 auto;
+  margin: 0 auto; /* Center the avatar */
   border: 2px solid #000000;
 }
 
@@ -87,19 +82,58 @@ body {
   object-fit: cover;
 }
 
+.profile-info {
+  margin-top: 10px;
+}
+
 .profile-name {
+  top: -40px;
   position: relative;
-  left: -126px;
-  top: -15px;
   font-size: 24px;
   margin: 10px 0 5px;
 }
+.loading-message, .no-products-message {
+  text-align: center;
+  padding: 20px;
+  font-size: 18px;
+  color: #666;
+  width: 100%;
+}
+
+.product-image {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px 8px 0 0;
+}
+
+.product-card {
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+}
+
+.Complete{
+  position: relative;
+  bottom: 47px;
+  left: 105px;
+  border: 1px solid rgb(0, 89, 255);
+  background-color: #4f30ca;
+  color: #ffffff;
+  font-weight: bold;
+  width: 180px;
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  height: 45px;
+  border-radius: 25px;
+}
 
 .profile-location {
+  top: -55px;
   position: relative;
-  left: -166px;
-  top: -30px;
-  font-size: 20px;
+  font-size: 16px;
   color: #000000;
   font-weight: 500;
 }
@@ -120,7 +154,6 @@ body {
   margin-top: 35px; /* Adds spacing between items */
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
-
 
 .menu-item i {
   border: 2px;
@@ -153,6 +186,8 @@ body {
   flex: 1;
   margin-top: 50px;
   overflow-y: auto;
+  position: relative; /* Ensure main content is positioned correctly */
+  z-index: 1; /* Ensure main content is below the drawer */
 }
 
 .header {
@@ -163,7 +198,9 @@ body {
 }
 
 .greeting {
-  font-size: 30px;
+  right: -8px;
+  position: relative;
+  font-size: 33px;
   font-weight: 600;
   margin: 0;
 }
@@ -330,4 +367,227 @@ body {
     justify-content: space-between; /* Adjust spacing for mobile */
     padding: 10px 20px;
   }
+}
+
+/* Product List Container */
+.product-list {
+  min-height: 100vh; /* Ensure the container covers the full height of the screen */
+  padding: 20px;
+  background-color: #f0f0f08c;
+  border-radius: 10px; /* Match the background color */
+}
+
+/* Modal Background */
+.product-list .modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ensure the modal is on top of other content */
+}
+
+/* Modal Content */
+.product-list .modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 350px;
+  text-align: center;
+  position: relative;
+  box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Close Button */
+.product-list .close-button {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  border: none;
+  background: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* Modal Image */
+.product-list .modal-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.product-list .product-grid {
+  position: relative;
+  top: 10px;
+  right: 17px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 43px;
+  padding: 29px;
+  justify-content: center;
+  background-color: #f0f0f000;
+}
+
+/* Individual Product Card */
+.product-list .product-card {
+  width: 100%; /* Take full width of the grid cell */
+  border: 2px solid #ffffff;
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+  background: #ffffff;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.product-list .product-card:hover {
+  transform: scale(1.05);
+}
+
+/* Product Image */
+.product-list .product-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+/* Delete Icon */
+.product-list .delete-icon {
+  cursor: pointer;
+  font-size: 20px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: #ff4d4d; /* Red color for the icon */
+}
+
+.product-list .delete-icon:hover {
+  color: #cc0000; /* Darker red on hover */
+}
+
+/* Go Back Button */
+.product-list .go-back-button {
+  position: relative;
+  top: 48px;
+  right: 0px;
+  border: none;
+  background-color: #ffffff00;
+  border-radius: 10px;
+  width: 43px;
+  height: 32px;
+  font-size: larger;
+}
+/* Go Back Button in Drawer */
+.drawer-bg-image {
+  position: relative; /* Ensure the button is positioned relative to this container */
+}
+
+.go-back-button-drawer {
+  position: absolute;
+  top: 20px; /* Adjust as needed */
+  left: 20px; /* Adjust as needed */
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 1; /* Ensure the button is above the image */
+}
+/* Pencil Icon for Changing Profile Image */
+.profile-image {
+  position: relative;
+  left: -1px;
+  top: -20px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto;
+  border: 2px solid #000000;
+}
+
+.avatar-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+  background: white;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.avatar-option {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.avatar-option:hover {
+  transform: scale(1.1);
+}
+.pencil-icon {
+  top: -45px;
+  position: relative;
+  bottom: 5px;
+  right: -30px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  padding: 5px;
+  cursor: pointer;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+}
+
+.pencil-icon:hover {
+  background-color: #f0f0f0;
+}
+.product-list .Head {
+  font-size: 30px;
+  position: relative;
+  text-align: left;
+  top: -10px;
+  right: 15px;
+}
+
+.product-list .Para {
+  position: relative;
+  top: -12px;
+  font-size: 20px;
+  text-align: left;
+  right: 7px;
+}
+
+.product-list .searchBar {
+  height: 38px;
+  width: 357px;
+  right: 7px;
+  position: relative;
+  top: 0px;
+  border: 1px solid #00000073;
+  border-radius: 50px;
+  padding: 0 10px;
+}
+
+.delete-button {
+  background-color: #ff4d4d; /* Red color for delete button */
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.delete-button:hover {
+  background-color: #cc0000; /* Darker red on hover */
 }

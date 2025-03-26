@@ -11,7 +11,7 @@ const loginSeller = async (req, res) => {
 
     try {
         // Fetch seller from the database
-        const [seller] = await db.execute("SELECT * FROM seller WHERE email = ?", [email]);
+        const [seller] = await db.execute("SELECT * FROM sellers WHERE email = ?", [email]);
 
         if (seller.length === 0) {
             return res.status(404).json({ message: "Seller not found" });

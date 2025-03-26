@@ -10,22 +10,6 @@ const getAllProducts = async (req, res) => {
   }
 };
 
-// Fetch a single product by ID
-const getProductById = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const [product] = await db.query("SELECT * FROM products WHERE id = ?", [id]);
-
-    if (product.length === 0) {
-      return res.status(404).json({ message: 'Product not found' });
-    }
-
-    res.status(200).json(product[0]);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching product', error });
-  }
-};
 
 // Update a product
 const updateProduct = async (req, res) => {
@@ -49,4 +33,4 @@ const updateProduct = async (req, res) => {
   }
 };
 
-module.exports = { getAllProducts, getProductById, updateProduct };
+module.exports = { getAllProducts, updateProduct };

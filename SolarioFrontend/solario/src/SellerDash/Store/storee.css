@@ -1,0 +1,385 @@
+.page-container {
+  height: 100vh;
+  width: 102vw;
+  display: flex;
+  flex-direction: column;
+  background-color: #f5f5f5;
+}
+
+.store-profile-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-sizing: border-box;
+  background: white;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.store-profile-container h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 1.25rem;
+  font-size: 1.5rem;
+  margin-top: 1rem;
+}
+
+.progress-text {
+  text-align: center;
+  margin-bottom: 0.5rem;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 0.625rem;
+  background-color: #f0f0f0;
+  border-radius: 0.3125rem;
+  margin-bottom: 1.875rem;
+  overflow: hidden;
+}
+
+.progress {
+  height: 100%;
+  background-color: #4CAF50;
+  transition: width 0.3s ease;
+}
+
+.step-indicator {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.875rem;
+  position: relative;
+  padding: 0 1rem;
+}
+
+.step-indicator::before {
+  content: '';
+  position: absolute;
+  top: 0.9375rem;
+  left: 1rem;
+  right: 1rem;
+  height: 0.125rem;
+  background-color: #ddd;
+  z-index: 1;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  flex: 1;
+}
+
+.step-number {
+  width: 1.875rem;
+  height: 1.875rem;
+  border-radius: 50%;
+  background-color: #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.3125rem;
+  color: #fff;
+  font-weight: bold;
+  font-size: 0.875rem;
+}
+
+.step.active .step-number {
+  background-color: #4CAF50;
+}
+
+.step-label {
+  font-size: 0.75rem;
+  color: #777;
+  text-align: center;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.store-profile-form {
+  background-color: #fff;
+  padding: 1.25rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.1);
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.step-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  flex-grow: 1;
+}
+
+.form-section {
+  background-color: #f9f9f9;
+  padding: 1.25rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.form-section h2 {
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+  color: #444;
+  font-size: 1.1rem;
+}
+
+.form-group-store {
+  margin-bottom: 1.25rem;
+}
+
+.form-group-store label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.form-group-store input[type="text"],
+.form-group-store input[type="file"] {
+  width: 100%;
+  padding: 0.625rem;
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+  font-size: 0.9375rem;
+  box-sizing: border-box;
+  background-color: white;
+}
+
+.file-input {
+  padding: 0.5rem 0;
+}
+
+.file-hint {
+  font-size: 0.75rem;
+  color: #666;
+  margin-top: 0.3125rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.photo-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+  margin-top: 0.625rem;
+}
+
+.preview-item {
+  position: relative;
+  width: 5rem;
+  height: 5rem;
+  flex-shrink: 0;
+}
+
+.preview-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0.25rem;
+}
+
+.remove-photo-btn {
+  position: absolute;
+  top: -0.5rem;
+  right: -0.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-color: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 0.875rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+}
+
+.step-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: auto;
+  gap: 1rem;
+  padding-top: 1.25rem;
+}
+
+.next-button-store,
+.back-button-store,
+.submit-button-store {
+  padding: 0.75rem 1.25rem;
+  border: none;
+  border-radius: 0.25rem;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+  text-align: center;
+  position: relative;
+  bottom:40px ;
+}
+
+.next-button-store,
+.submit-button-store {
+  
+  background-color: #4CAF50;
+  
+  color: white;
+}
+
+.next-button-store:hover,
+.submit-button-store:hover {
+  background-color: #45a049;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.back-button-store {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.back-button-store:hover {
+  background-color: #e0e0e0;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.message {
+  padding: 0.625rem;
+  margin-top: 1.25rem;
+  border-radius: 0.25rem;
+  text-align: center;
+  font-size: 0.875rem;
+}
+
+.message.success {
+  background-color: #dff0d8;
+  color: #3c763d;
+  border: 1px solid #d6e9c6;
+}
+
+.message.error {
+  background-color: #f2dede;
+  color: #a94442;
+  border: 1px solid #ebccd1;
+}
+
+/* Tablet and Desktop Styles */
+@media (min-width: 768px) {
+  .store-profile-container {
+    padding: 1.5rem;
+  }
+  
+  .store-profile-container h1 {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-section {
+    padding: 1.5rem;
+  }
+  
+  .form-section h2 {
+    font-size: 1.25rem;
+  }
+  
+  .step-label {
+    font-size: 0.8rem;
+    white-space: normal;
+  }
+  
+  .preview-item {
+    width: 6rem;
+    height: 6rem;
+  }
+  
+  .step-actions {
+    gap: 1.5rem;
+  }
+  
+  .next-button-store,
+  .back-button-store,
+  .submit-button-store {
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+/* Large Desktop Styles */
+@media (min-width: 1024px) {
+  .store-profile-container {
+    padding: 2rem;
+  }
+  
+  .store-profile-container h1 {
+    font-size: 2rem;
+  }
+  
+  .form-row {
+    gap: 1.5rem;
+  }
+  
+  .step-actions {
+    gap: 2rem;
+  }
+}
+
+/* Small Mobile Devices */
+@media (max-width: 480px) {
+  .store-profile-container {
+    padding: 0.75rem;
+  }
+  
+  .store-profile-form {
+    padding: 1rem;
+  }
+  
+  .form-section {
+    padding: 1rem;
+  }
+  
+  .form-group-store input[type="text"] {
+    padding: 0.5rem;
+  }
+  
+  .step-indicator {
+    padding: 0 0.5rem;
+  }
+  
+  .step-indicator::before {
+    left: 0.5rem;
+    right: 0.5rem;
+  }
+  
+  .preview-item {
+    width: 4rem;
+    height: 4rem;
+  }
+  
+  .form-row {
+    gap: 0.75rem;
+  }
+  
+  .step-actions {
+    flex-direction: column;
+  }
+}

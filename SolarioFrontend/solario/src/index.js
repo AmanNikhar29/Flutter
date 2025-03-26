@@ -11,10 +11,9 @@ import Home from "./HomePage/MainPage";
 import Register from './AuthPage/JS/Reg';
 import Seller from './SellerDash/SellerDash';
 import Products from './SellerDash/Products/product';
-import ListPage from './SellerDash/Products/ProductList';
 import ProductDetails from './SellerDash/Products/productDetails'; // Import the ProductDetails component
 import Edit from './SellerDash/Products/EditProfile';
-import Com from './SellerDash/Complete';
+import Com from './SellerDash/Store/store';
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
@@ -22,7 +21,7 @@ root.render(
     <BrowserRouter>
       <Routes>
         {/* Login Page (Default Route) */}
-        <Route path="/" element={<Com />} />
+        <Route path="/" element={<Home />} />
 
         {/* Forgot Password Page */}
         <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -44,13 +43,13 @@ root.render(
 
         {/* Products Page */}
         <Route path="/Product" element={<Products />} />
-
-        {/* Product List Page */}
-        <Route path="/ProductList" element={<ListPage />} />
-
+        
         {/* Product Details Page */}
         <Route path="/products/:id" element={<ProductDetails />} /> 5
         <Route path="/editProfile" element={<Edit />} />{/* Add this route for product details */}
+        <Route path="/editProfile" element={<Edit />} />{/* Add this route for product details */}
+
+        <Route path="/CompelteProfile" element={<Com />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

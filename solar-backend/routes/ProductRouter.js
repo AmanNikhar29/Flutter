@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const multer = require("multer");
 const productController = require("../controllers/Sellers/Products/Product");
-const {deleteProduct} = require("../controllers/Sellers/Products/Product");
+const {deleteProduct,addProduct,getAllProducts,getAllProductsId} = require("../controllers/Sellers/Products/Product");
 
 // ✅ Ensure 'uploads' directory exists
 const uploadDir = "uploads/";
@@ -43,6 +43,8 @@ router.post("/upload", upload.single("file"), (req, res) => {
 });
 
 // ✅ Route to Add New Product (Ensure 'product_image' is sent from frontend)
-router.post("/", upload.single("product_image"), productController.addProduct);
+router.post("/", upload.single("product_image"), addProduct);
 router.delete('/delproduct/:id',deleteProduct);
+router.get('/getProducts',getAllProducts)
+router.get('/ParticularProduct/:id',getAllProductsId);
 module.exports = router;
